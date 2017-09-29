@@ -1,0 +1,17 @@
+{
+  "name": "typescript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm-run-all --parallel start-tsc start-server",
+    "start-tsc": "tsc -w",
+    "start-server": "http-server"
+  },
+  "author": "Victor Busquets Boro",
+  "license": "ISC",
+  "dependencies": {
+    "npm-run-all": "^4.1.1",
+    "systemjs": "^0.20.19"
+  }
+}
