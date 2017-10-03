@@ -1,4 +1,4 @@
 export const BOARD_CONSTANT = {
     'boardLetters': 'abcdefgh',
-    'boardNumbers': '12345678'
+    'boardNumbers': '87654321'
 };

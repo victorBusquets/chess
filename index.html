@@ -5,7 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-  Hola mundo
+  <canvas id="game">
+    Tu navegador no soporta canvas de html5
+  </canvas>
+
+  <style>
+    body{
+      margin:0px;
+    }
+    canvas{
+      box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+      margin:50px auto;
+      display:block;
+    }
+  </style>
 
   <script src="node_modules/systemjs/dist/system.js"></script>
   <script>

@@ -6,7 +6,7 @@ import {Queen} from './QueenPiece.class.js';
 import {King} from './KingPiece.class.js';
 
 
-export var pieces {
+export var pieces = {
     'pawn': Pawn,
     'rook': Rook,
     'knight': Knight,

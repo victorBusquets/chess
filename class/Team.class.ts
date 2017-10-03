@@ -4,25 +4,33 @@ import { pieces } from './pieces/pieces.js';
 
 export class Team {
     color:string;
-    team:Piece[] = [];
+    values:Piece[] = [];
+    reverseAssets:boolean;
 
-    constructor(color:string){
+    constructor(color:string, reverseAssets:boolean, canvas:any){
         this.color = color;
-        this.prepare();
-        this.printInfo();
+        this.reverseAssets = reverseAssets;
+        this.prepare(canvas);
     }
 
-    prepare(){
+    prepare(canvas:any){
 		for(var i = 0; i<TEAM_CONSTANT.pieces.length; i++){
 			var piece = TEAM_CONSTANT.pieces[i];
-
 			for(var x = 0; x<piece.count; x++){
-                this.team.push( new pieces[piece.type](piece.type, this.color, x) );
+                this.values.push( new pieces[piece.type](piece.type, this.color, x, this.reverseAssets, canvas) );
 			};	
 		};
-	};
+    };
+    
+    render(){
+        for(var i=0; i<this.values.length; i++){
+            this.values[i].render();
+        }
+    }
 
-    printInfo(){
-        console.log("Team "+this.color+" ready!!",this.team);
+    checkPieceInCell( mouseCellPosition:string ){
+        console.log(this.values.filter(function(piece){
+            return piece.position === mouseCellPosition;
+        })[0]);
     }
 };
