@@ -8,8 +8,10 @@ export class Board {
     whiteTeam:Team;
     values:Cell[] = [];
     canvas:Canvas;
-    teamWhiteTurn:boolean = false;
+    teamWhiteTurn:boolean = true;
     lastMouseCellPosition:string = '';
+    lastMouseCellClickPosition:string = '';
+    pieceActive:any;
 
     constructor(){
         this.canvas = new Canvas();
@@ -19,9 +21,6 @@ export class Board {
 
         this.prepare();
         this.render();
-        
-        this.blackTeam.render();
-        this.whiteTeam.render();
     }
 
     prepare(){
@@ -45,9 +44,12 @@ export class Board {
 
             this.canvas.fillCell( position, cell.color );
         }
+        this.blackTeam.render();
+        this.whiteTeam.render();
     }
 
     addEventListener( canvas:any ){
+        //ESTO ESTA MUY GUARRO!
         canvas.addEventListener('mousemove',  function(evt) {
             var rect = canvas.getBoundingClientRect();
             var mousePosition = {
@@ -57,9 +59,46 @@ export class Board {
             var mouseCellPosition = this.getCellByPosition(mousePosition);
 
             if(mouseCellPosition != this.lastMouseCellPosition && mouseCellPosition != NaN){
-                this[( this.teamWhiteTurn ? 'white' : 'black' )+ 'Team'].checkPieceInCell( mouseCellPosition );
+                var piece = this[( this.teamWhiteTurn ? 'white' : 'black' )+ 'Team'].checkPieceInCell( mouseCellPosition );
                 this.lastMouseCellPosition = mouseCellPosition;
+                this.canvas.clearMovements( this.values, false );
+
+                if(piece){
+                    piece.showMovements( false );
+                }
             }
+        }.bind(this), false);
+        
+        canvas.addEventListener('mouseleave', function(evt){
+            this.lastMouseCellPosition = '';
+            this.canvas.clearMovements( this.values, false );
+        }.bind(this));
+
+        canvas.addEventListener('click',  function(evt) {
+            var rect = canvas.getBoundingClientRect();
+            var mousePosition = {
+                x: evt.clientX - rect.left,
+                y: evt.clientY - rect.top
+            };
+            var mouseCellClickPosition = this.getCellByPosition(mousePosition);
+            
+            if(mouseCellClickPosition != this.lastMouseCellClickPosition){
+                var piece = this[( this.teamWhiteTurn ? 'white' : 'black' )+ 'Team'].checkPieceInCell( mouseCellClickPosition );
+                this.lastMouseCellClickPosition = mouseCellClickPosition;
+                
+                if(piece){
+                    this.canvas.clearMovements( this.values, true );
+                    this.pieceActive = piece;
+                    piece.showMovements( true );
+                }else{
+                    console.log("Click in cell", this.canvas.movements.indexOf(mouseCellClickPosition) );
+                    console.log("Piece active", this.pieceActive);
+                }
+            }else{
+                this.lastMouseCellClickPosition = '';
+                this.canvas.clearMovements( this.values, true );                
+            }
+            
         }.bind(this), false);
     }
 

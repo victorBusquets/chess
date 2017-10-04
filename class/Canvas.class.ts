@@ -6,6 +6,8 @@ export class Canvas{
     ctx:any; 
     cellSize:number;   
     rotatedImagePosition:any;
+    posibleMovementsActives:string[] = [];
+    movements:string[] = [];
 
     constructor(){
         this.canvas = document.getElementById( "game" );
@@ -95,19 +97,55 @@ export class Canvas{
         };
 
         imageObj.src = imgUrl;
-	};
+	}
 		
-	translateContext( position ){
+	translateContext( position:any ){
 		this.ctx.save();
 		this.ctx.translate( position.x, position.y );
-	};
+	}
 	
-	rotateContext( position, degrees ){
+	rotateContext( position:any, degrees:number ){
 	    this.translateContext( position );
 		this.ctx.rotate( degrees * Math.PI /180);
-	};
+	}
 	
 	restoreContext(){
 		this.ctx.restore();
-    };
+    }
+
+    showPosibleMovements( posibleMovements:string[] ){        
+        posibleMovements.map(function(movement:string){
+            if( this.canChangeCellStatus( false, movement ) ){
+                var position:any = this.translateValueToPosition(movement);
+                this.fillCell( position, 'rgba(172, 229, 238, .5)' );
+            }
+        }.bind(this));
+
+        this.posibleMovementsActives = posibleMovements;
+    }
+
+    showMovements( movements:string[] ){     
+        movements.map(function(movement:string){
+            var position:any = this.translateValueToPosition(movement);
+            this.fillCell( position, 'rgba(122, 179, 188, .75)' );
+        }.bind(this));
+        
+        this.movements = movements;
+    }
+
+    clearMovements( boardCells:any[], clickAction:boolean ){
+        var cleanedMovements = clickAction ? this.movements : this.posibleMovementsActives;
+
+        for(var i=0; i<boardCells.length; i++){
+            if( cleanedMovements.indexOf( boardCells[i].value) >= 0 && this.canChangeCellStatus(clickAction, boardCells[i].value) ){
+                this.fillCell( this.translateValueToPosition(boardCells[i].value), boardCells[i].color );
+            }
+        }
+
+        cleanedMovements = []; 
+    }
+
+    canChangeCellStatus( clickAction:boolean, cellPosition:string ){
+        return ( clickAction ? true : this.movements.indexOf( cellPosition ) < 0 );
+    }
 };

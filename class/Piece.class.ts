@@ -32,4 +32,9 @@ export class Piece {
         // Piece out board
         this.setPosition('a0');
     }
+
+    showMovements(){
+        //Not implemented
+        console.log("!Child of Piece.class.ts ("+this.type+") should implements 'showMovements()' function");
+    }
 };

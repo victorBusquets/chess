@@ -29,8 +29,8 @@ export class Team {
     }
 
     checkPieceInCell( mouseCellPosition:string ){
-        console.log(this.values.filter(function(piece){
+        return this.values.filter(function(piece){
             return piece.position === mouseCellPosition;
-        })[0]);
+        })[0];
     }
 };
