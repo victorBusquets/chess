@@ -9,7 +9,7 @@ export class Canvas{
     posibleMovementsActives:string[] = [];
     movements:string[] = [];
 
-    constructor(){
+    constructor( ){
         this.canvas = document.getElementById( "game" );
         this.ctx  = this.canvas.getContext("2d");
 
@@ -142,7 +142,7 @@ export class Canvas{
             }
         }
 
-        cleanedMovements = []; 
+        this[clickAction ? 'movements' : 'posibleMovementsActives'] = [];
     }
 
     canChangeCellStatus( clickAction:boolean, cellPosition:string ){

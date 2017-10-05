@@ -11,10 +11,10 @@ export class Board {
     teamWhiteTurn:boolean = true;
     lastMouseCellPosition:string = '';
     lastMouseCellClickPosition:string = '';
-    pieceActive:any;
+    pieceActive:any = null;
 
     constructor(){
-        this.canvas = new Canvas();
+        this.canvas = new Canvas( );
 
         this.whiteTeam = new Team('white', false, this.canvas);
         this.blackTeam = new Team('black', true, this.canvas);
@@ -50,7 +50,7 @@ export class Board {
 
     addEventListener( canvas:any ){
         //ESTO ESTA MUY GUARRO!
-        canvas.addEventListener('mousemove',  function(evt) {
+        canvas.addEventListener('mousemove',  function(evt:any) {
             var rect = canvas.getBoundingClientRect();
             var mousePosition = {
                 x: evt.clientX - rect.left,
@@ -69,36 +69,40 @@ export class Board {
             }
         }.bind(this), false);
         
-        canvas.addEventListener('mouseleave', function(evt){
+        canvas.addEventListener('mouseleave', function(evt:any){
             this.lastMouseCellPosition = '';
             this.canvas.clearMovements( this.values, false );
         }.bind(this));
 
-        canvas.addEventListener('click',  function(evt) {
+        canvas.addEventListener('click',  function(evt:any) {
             var rect = canvas.getBoundingClientRect();
             var mousePosition = {
                 x: evt.clientX - rect.left,
                 y: evt.clientY - rect.top
             };
             var mouseCellClickPosition = this.getCellByPosition(mousePosition);
+            var piece = this[( this.teamWhiteTurn ? 'white' : 'black' )+ 'Team'].checkPieceInCell( mouseCellClickPosition );
             
-            if(mouseCellClickPosition != this.lastMouseCellClickPosition){
-                var piece = this[( this.teamWhiteTurn ? 'white' : 'black' )+ 'Team'].checkPieceInCell( mouseCellClickPosition );
-                this.lastMouseCellClickPosition = mouseCellClickPosition;
-                
-                if(piece){
+            this.lastMouseCellClickPosition = mouseCellClickPosition;
+
+            if(piece){
+                // Click in piece of my team
+                if( piece==this.pieceActive ){
+                    // Deactive piece
+                    this.pieceActive = null;
+                    this.lastMouseCellClickPosition = '';
+                    this.canvas.clearMovements( this.values, true );   
+                }else{
+                    // Active piece
                     this.canvas.clearMovements( this.values, true );
                     this.pieceActive = piece;
                     piece.showMovements( true );
-                }else{
-                    console.log("Click in cell", this.canvas.movements.indexOf(mouseCellClickPosition) );
-                    console.log("Piece active", this.pieceActive);
                 }
             }else{
-                this.lastMouseCellClickPosition = '';
-                this.canvas.clearMovements( this.values, true );                
+                // Click in cell or piece enemy team
+                console.log("Click in ->", this.canvas.movements.indexOf(mouseCellClickPosition) >=0 ? mouseCellClickPosition : '"Not active cell"'  );
+                console.log("Piece ->", this.pieceActive ? this.pieceActive : '"Not active piece"');
             }
-            
         }.bind(this), false);
     }
 
