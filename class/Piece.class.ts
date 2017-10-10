@@ -22,12 +22,12 @@ export class Piece {
     }
 
     render(){
-        this.canvas.fillPiece(this, this.reverseAssets);
+        this.canvas.fillPiece(this);
     }
 
     prepare(){
         //Not implemented
-        console.log("!Child of Piece.class.ts ("+this.type+") should implements 'prepare()' function");
+        console.error("!Child of Piece.class.ts ("+this.type+") should implements 'prepare()' function");
         
         // Piece out board
         this.setPosition('a0');
@@ -35,6 +35,11 @@ export class Piece {
 
     showMovements(){
         //Not implemented
-        console.log("!Child of Piece.class.ts ("+this.type+") should implements 'showMovements()' function");
+        console.error("!Child of Piece.class.ts ("+this.type+") should implements 'showMovements()' function");
+    }
+
+    movementCallback(){
+        //Not implemented
+        console.info("!Child of Piece.class.ts ("+this.type+") can implements 'movementCallback()' function"); 
     }
 };

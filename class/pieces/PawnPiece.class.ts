@@ -24,4 +24,8 @@ export class Pawn extends Piece{
 
         this.canvas[ clickAction ? 'showMovements' : 'showPosibleMovements' ]( movements );
     }
+
+    movementCallback(){
+        this.firstMovement = false;
+    }
 }

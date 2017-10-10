@@ -51,9 +51,9 @@ export class Canvas{
         this.fillRect(position.x * this.cellSize, position.y * this.cellSize, this.cellSize, this.cellSize, color);
     }
 
-    fillPiece(piece:any, reverse:boolean){
+    fillPiece(piece:any){
         var position = this.translateValueToPosition(piece.position);
-        var rotate = ( reverse ? 180 : 0 );
+        var rotate = ( piece.reverseAssets ? 180 : 0 );
         this.drawRotatedImage( piece.asset, position, rotate);
         //this.drawImage( piece.asset, position);
     }
@@ -133,6 +133,7 @@ export class Canvas{
         this.movements = movements;
     }
 
+    // CHECK MORE EFFICIENT CODE!!!
     clearMovements( boardCells:any[], clickAction:boolean ){
         var cleanedMovements = clickAction ? this.movements : this.posibleMovementsActives;
 
@@ -147,5 +148,23 @@ export class Canvas{
 
     canChangeCellStatus( clickAction:boolean, cellPosition:string ){
         return ( clickAction ? true : this.movements.indexOf( cellPosition ) < 0 );
+    }
+
+    clearCell( value:string, boardCells:any[] ){
+        var position = this.translateValueToPosition(value);
+        var index = ( 8 * position.y ) + position.x;
+
+        this.fillCell( position, boardCells[index].color );
+    }
+
+    executeMovement( piece:any, cellIndex:number, boardCells:any[] ){
+        var lastPosition = piece.position;
+        var newPosition = this.movements[cellIndex];
+
+        this.clearCell( lastPosition, boardCells );
+        piece.position = newPosition;
+        this.fillPiece( piece );
+        this.clearMovements( boardCells, true );
+        piece.movementCallback();
     }
 };

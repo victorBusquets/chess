@@ -100,10 +100,22 @@ export class Board {
                 }
             }else{
                 // Click in cell or piece enemy team
-                console.log("Click in ->", this.canvas.movements.indexOf(mouseCellClickPosition) >=0 ? mouseCellClickPosition : '"Not active cell"'  );
-                console.log("Piece ->", this.pieceActive ? this.pieceActive : '"Not active piece"');
+                // console.log("Click in ->", this.canvas.movements.indexOf(mouseCellClickPosition) >=0 ? mouseCellClickPosition : '"Not active cell"'  );
+                // console.log("Piece ->", this.pieceActive ? this.pieceActive : '"Not active piece"');
+
+                this.checkClickInActiveCell(mouseCellClickPosition);
             }
         }.bind(this), false);
+    }
+
+    checkClickInActiveCell(mouseCellClickPosition:any){
+        var cellIndex = this.canvas.movements.indexOf(mouseCellClickPosition);
+        
+        if( this.pieceActive && cellIndex >= 0 ){
+            this.canvas.executeMovement( this.pieceActive, cellIndex, this.values );
+            this.pieceActive = null;
+            this.teamWhiteTurn = !this.teamWhiteTurn;
+        }
     }
 
     getCellByPosition( mousePos:any ){
