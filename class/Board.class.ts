@@ -96,7 +96,7 @@ export class Board {
                     // Active piece
                     this.canvas.clearMovements( this.values, true );
                     this.pieceActive = piece;
-                    piece.showMovements( true );
+                    piece.showMovements( true, checkPiecePosition );
                 }
             }else{
                 // Click in cell or piece enemy team
@@ -117,6 +117,11 @@ export class Board {
             this.teamWhiteTurn = !this.teamWhiteTurn;
         }
     }
+
+    // checkIsPiecePosition( position:any, colorTurn:string ){
+    //     var piece = this.blackTeam.checkPieceInCell( position ) || this.whiteTeam.checkPieceInCell( position );
+    //     return piece ? piece : false;
+    // }
 
     getCellByPosition( mousePos:any ){
         var cellSize = this.canvas.cellSize;
