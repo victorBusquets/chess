@@ -20,7 +20,7 @@ export class Knight extends Piece{
         this.setPosition( column + row );
     }
 
-    showMovements( clickAction:boolean ){
+    showMovements( clickAction:boolean, checkIsPiecePosition:any ){
         var positionLetter = this.position[0];
         var positionNumber = parseInt( this.position[1] );
         var movements = [];
@@ -31,7 +31,9 @@ export class Knight extends Piece{
             var letterIndex = BOARD_CONSTANT.boardLetters.indexOf( positionLetter ) + code.x;
             var finalPositionLetter = BOARD_CONSTANT.boardLetters[ letterIndex ] || 'K';
 
-            movements.push( finalPositionLetter + finalPositionNumber );
+            if( !checkIsPiecePosition(finalPositionLetter + finalPositionNumber) ){
+                movements.push( finalPositionLetter + finalPositionNumber );
+            }
         });
 
 

@@ -11,7 +11,7 @@ export class Pawn extends Piece{
         this.setPosition( column + row );
     }
 
-    showMovements( clickAction:boolean ){
+    showMovements( clickAction:boolean, checkIsPiecePosition:any ){
         var movementTimes = ( this.firstMovement ? 2 : 1 );
         var positionLetter = this.position[0];
         var positionNumber = parseInt( this.position[1] );
@@ -19,7 +19,10 @@ export class Pawn extends Piece{
 
         for(var i=1; movementTimes>=i; i++){
             var finalPositionNumber = positionNumber + ( this.reverseAssets ? -i : i );
-            movements.push( positionLetter + finalPositionNumber );
+
+            if( !checkIsPiecePosition(positionLetter + finalPositionNumber) ){
+                movements.push( positionLetter + finalPositionNumber );
+            }
         }
 
         this.canvas[ clickAction ? 'showMovements' : 'showPosibleMovements' ]( movements );
