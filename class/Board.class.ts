@@ -14,7 +14,7 @@ export class Board {
     pieceActive:any = null;
 
     constructor(){
-        this.canvas = new Canvas( );
+        this.canvas = new Canvas( this.checkIsPiecePosition.bind(this) );
 
         this.whiteTeam = new Team('white', false, this.canvas);
         this.blackTeam = new Team('black', true, this.canvas);

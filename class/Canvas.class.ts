@@ -4,14 +4,35 @@ export class Canvas{
     margin:number = 100 
     canvas:any;
     ctx:any; 
+    checkIsPiecePosition:any;
     cellSize:number;   
     rotatedImagePosition:any;
     posibleMovementsActives:string[] = [];
     movements:string[] = [];
 
-    constructor( ){
+    COLORS = {
+        activeCell:{
+            value:'122, 179, 188',
+            opacity:{
+                click:'.75',
+                hover:'.5'
+            }
+        },
+        killCell:{
+            value:'218, 41, 41',
+            opacity:{
+                click:'.75',
+                hover:'.5'
+            }
+        }
+    };
+
+
+
+    constructor( checkIsPiecePosition:any ){
         this.canvas = document.getElementById( "game" );
         this.ctx  = this.canvas.getContext("2d");
+        this.checkIsPiecePosition = checkIsPiecePosition;
 
         this.prepare();
     }
@@ -37,7 +58,7 @@ export class Canvas{
 		this.ctx.fillRect( startX, startY, width, height );
     }
 
-    fillCircle(position, color){
+    fillCircle(position:string, color:string){
         var x = this.cellSize/2 + (this.cellSize * position.x);
         var y = this.cellSize/2 + (this.cellSize * position.y);
 
@@ -113,11 +134,34 @@ export class Canvas{
 		this.ctx.restore();
     }
 
+    COLORS = {
+        activeCell:{
+            value:'122, 179, 188',
+            opacity:{
+                click:'.75',
+                hover:'.5'
+            }
+        },
+        killCell:{
+            value:'218, 41, 41',
+            opacity:{
+                click:'.75',
+                hover:'.5'
+            }
+        }
+    };
+
     showPosibleMovements( posibleMovements:string[] ){        
         posibleMovements.map(function(movement:string){
             if( this.canChangeCellStatus( false, movement ) ){
+                var piece = this.checkIsPiecePosition(movement);                
                 var position:any = this.translateValueToPosition(movement);
-                this.fillCell( position, 'rgba(172, 229, 238, .5)' );
+
+                this.fillCell( position, 'rgba('+this.COLORS[piece?'killCell':'activeCell'].value+','+this.COLORS.activeCell.opacity.hover+')' );
+
+                if(piece){
+                    this.fillPiece( piece );  
+                }
             }
         }.bind(this));
 
@@ -126,8 +170,14 @@ export class Canvas{
 
     showMovements( movements:string[] ){     
         movements.map(function(movement:string){
+            var piece = this.checkIsPiecePosition(movement);
             var position:any = this.translateValueToPosition(movement);
-            this.fillCell( position, 'rgba(122, 179, 188, .75)' );
+
+            this.fillCell( position, 'rgba('+this.COLORS[piece?'killCell':'activeCell'].value+','+this.COLORS.activeCell.opacity.click+')' );      
+
+            if(piece){
+                this.fillPiece( piece );  
+            }
         }.bind(this));
         
         this.movements = movements;
@@ -139,7 +189,13 @@ export class Canvas{
 
         for(var i=0; i<boardCells.length; i++){
             if( cleanedMovements.indexOf( boardCells[i].value) >= 0 && this.canChangeCellStatus(clickAction, boardCells[i].value) ){
+                var piece = this.checkIsPiecePosition(boardCells[i].value);
+                
                 this.fillCell( this.translateValueToPosition(boardCells[i].value), boardCells[i].color );
+
+                if(piece){
+                    this.fillPiece( piece );  
+                }
             }
         }
 

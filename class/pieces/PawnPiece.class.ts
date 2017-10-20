@@ -14,7 +14,7 @@ export class Pawn extends Piece{
         var movementTimes = ( this.firstMovement ? 2 : 1 );
         var positionLetter = this.position[0];
         var positionNumber = parseInt( this.position[1] );
-        var movements = [];
+        var movements:any[] = [];
 
         for(var i=1; movementTimes>=i; i++){
             var finalPositionNumber = positionNumber + ( this.reverseAssets ? -i : i );
@@ -24,7 +24,28 @@ export class Pawn extends Piece{
             }
         }
 
+        movements = movements.concat( this.checkKillMovements( checkIsPiecePosition ) );
+
         this.canvas[ clickAction ? 'showMovements' : 'showPosibleMovements' ]( movements );
+    }
+
+    checkKillMovements( checkIsPiecePosition:any ){
+        var positionLetter = this.position[0];
+        var positionNumber = parseInt( this.position[1] );
+        var letterIndex = this.BOARD_CONSTANT.boardLetters.indexOf( positionLetter );
+        var killMovements:any[] = [];
+
+        for(var i=0; i<2; i++){
+            var finalPositionLetter =  this.BOARD_CONSTANT.boardLetters[letterIndex + ( i? -1 : 1 ) ];
+            var finalPositionNumber = positionNumber + ( this.reverseAssets ? -1 : 1 );
+            var piecePosition = checkIsPiecePosition(finalPositionLetter + finalPositionNumber)
+
+            if( piecePosition && piecePosition.color !== this.color ){
+                killMovements.push( finalPositionLetter + finalPositionNumber );
+            } 
+        }
+
+        return killMovements;
     }
 
     movementCallback(){
