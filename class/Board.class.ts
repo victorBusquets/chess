@@ -112,6 +112,12 @@ export class Board {
         var cellIndex = this.canvas.movements.indexOf(mouseCellClickPosition);
         
         if( this.pieceActive && cellIndex >= 0 ){
+            var piece = this.checkIsPiecePosition( this.canvas.movements[cellIndex]);
+
+            if( piece ){
+                this[this.teamWhiteTurn ? 'blackTeam' : 'whiteTeam'].killPiece(piece)
+            }
+
             this.canvas.executeMovement( this.pieceActive, cellIndex, this.values );
             this.pieceActive = null;
             this.teamWhiteTurn = !this.teamWhiteTurn;

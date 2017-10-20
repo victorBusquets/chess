@@ -33,4 +33,12 @@ export class Team {
             return piece.position === mouseCellPosition;
         })[0];
     }
+
+    killPiece( piece:Piece ){
+        var index = this.values.indexOf(piece);
+
+        if(index >= 0){
+            this.values.splice(index, 1);
+        }
+    }
 };
