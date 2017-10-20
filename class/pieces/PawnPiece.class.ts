@@ -1,11 +1,10 @@
-import {BOARD_CONSTANT} from '../../constants/board.constant.js';
 import {Piece} from '../Piece.class.js';
 
 export class Pawn extends Piece{
     firstMovement:boolean = true;
 
     prepare(){
-        var column = BOARD_CONSTANT.boardLetters[this.index],
+        var column = this.BOARD_CONSTANT.boardLetters[this.index],
         row = ( this.color === 'white' ? 2 : 7 );
     
         this.setPosition( column + row );

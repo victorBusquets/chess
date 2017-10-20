@@ -1,4 +1,3 @@
-import {BOARD_CONSTANT} from '../../constants/board.constant.js';
 import {Piece} from '../Piece.class.js';
 
 export class Knight extends Piece{
@@ -21,22 +20,6 @@ export class Knight extends Piece{
     }
 
     showMovements( clickAction:boolean, checkIsPiecePosition:any ){
-        var positionLetter = this.position[0];
-        var positionNumber = parseInt( this.position[1] );
-        var movements = [];
-
-
-        this.MOVEMENT_CODES.map(function( code ){
-            var finalPositionNumber = positionNumber + code.y;
-            var letterIndex = BOARD_CONSTANT.boardLetters.indexOf( positionLetter ) + code.x;
-            var finalPositionLetter = BOARD_CONSTANT.boardLetters[ letterIndex ] || 'K';
-
-            if( !checkIsPiecePosition(finalPositionLetter + finalPositionNumber) ){
-                movements.push( finalPositionLetter + finalPositionNumber );
-            }
-        });
-
-
-        this.canvas[ clickAction ? 'showMovements' : 'showPosibleMovements' ]( movements );
+        this.prepareMovementsByPositions( clickAction, checkIsPiecePosition );
     }
 }
