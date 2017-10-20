@@ -1,6 +1,8 @@
 import {BOARD_CONSTANT} from '../constants/board.constant.js';
 
 export class Piece {
+    MOVEMENT_CODES:any[] = [];
+    DIRECTIONS:any[] = [];    
     color:string;
     type:string;
     asset:string;
@@ -45,8 +47,15 @@ export class Piece {
         //Not implemented
     }
 
+    isValidPosition( letter:string, number:number, piece:any ){
+        var notPiecePosition = piece === false;
+        var notOverBoardLimits = ( letter != 'K' && number>0 && number<=8 );
+
+        return notPiecePosition && notOverBoardLimits;
+    }
+
     prepareMovementsByDirections( clickAction:boolean, checkIsPiecePosition:any ){
-        if(this.DIRECTIONS){
+        if(this.DIRECTIONS !== []){
             var positionLetter:string = this.position[0];
             var positionNumber:number = parseInt( this.position[1] );
             var movements:any[] = [];
@@ -59,13 +68,19 @@ export class Piece {
                     var finalPositionNumber = positionNumber + ( direction.y * index );
                     var letterIndex = this.BOARD_CONSTANT.boardLetters.indexOf( positionLetter ) + ( direction.x * index );
                     var finalPositionLetter = this.BOARD_CONSTANT.boardLetters[ letterIndex ] || 'K';
+                    var piece = checkIsPiecePosition(finalPositionLetter + finalPositionNumber);
 
-                    if( this.isValidPosition( finalPositionLetter, finalPositionNumber, checkIsPiecePosition ) ){
+                    // TO DO: Mejorar esto!!!!!!
+                    if( this.isValidPosition( finalPositionLetter, finalPositionNumber, piece ) ){
                         movements.push( finalPositionLetter + finalPositionNumber );
                         index++;
+                    }else if(piece.color != this.color){
+                        movements.push( finalPositionLetter + finalPositionNumber );                        
+                        validWay = false;
                     }else{
                         validWay = false;
                     }
+
                 }
             }.bind(this));
 
@@ -76,7 +91,7 @@ export class Piece {
     }
 
     prepareMovementsByPositions( clickAction:boolean, checkIsPiecePosition:any ){
-        if(this.MOVEMENT_CODES){            
+        if(this.MOVEMENT_CODES !== []){            
             var positionLetter = this.position[0];
             var positionNumber = parseInt( this.position[1] );
             var movements:any[] = [];
@@ -85,10 +100,12 @@ export class Piece {
                 var finalPositionNumber = positionNumber + code.y;
                 var letterIndex = this.BOARD_CONSTANT.boardLetters.indexOf( positionLetter ) + code.x;
                 var finalPositionLetter = this.BOARD_CONSTANT.boardLetters[ letterIndex ] || 'K';
+                var piece = checkIsPiecePosition(finalPositionLetter + finalPositionNumber);
 
-                if( !checkIsPiecePosition(finalPositionLetter + finalPositionNumber) ){
+                if( piece === false || piece.color !== this.color ){
                     movements.push( finalPositionLetter + finalPositionNumber );
                 }
+            
             }.bind(this));
 
             this.canvas[ clickAction ? 'showMovements' : 'showPosibleMovements' ]( movements );

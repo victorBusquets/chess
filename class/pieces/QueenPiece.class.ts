@@ -19,13 +19,6 @@ export class Queen extends Piece{
         this.setPosition( column + row );
     }
     
-    isValidPosition( letter:string, number:number, checkIsPiecePosition:any ){
-        var notPiecePosition = checkIsPiecePosition(letter + number) == false;
-        var notOverBoardLimits = ( letter != 'K' && number>0 && number<=8 );
-
-        return notPiecePosition && notOverBoardLimits;
-    }
-
     showMovements( clickAction:boolean, checkIsPiecePosition:any ){
         this.prepareMovementsByDirections( clickAction, checkIsPiecePosition );
     }
