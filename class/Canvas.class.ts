@@ -134,23 +134,6 @@ export class Canvas{
 		this.ctx.restore();
     }
 
-    COLORS = {
-        activeCell:{
-            value:'122, 179, 188',
-            opacity:{
-                click:'.75',
-                hover:'.5'
-            }
-        },
-        killCell:{
-            value:'218, 41, 41',
-            opacity:{
-                click:'.75',
-                hover:'.5'
-            }
-        }
-    };
-
     showPosibleMovements( posibleMovements:string[] ){        
         posibleMovements.map(function(movement:string){
             if( this.canChangeCellStatus( false, movement ) ){
