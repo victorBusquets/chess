@@ -16,11 +16,14 @@ export class Pawn extends Piece{
         var positionNumber = parseInt( this.position[1] );
         var movements:any[] = [];
 
+
         for(var i=1; movementTimes>=i; i++){
             var finalPositionNumber = positionNumber + ( this.reverseAssets ? -i : i );
 
             if( !checkIsPiecePosition(positionLetter + finalPositionNumber) ){
                 movements.push( positionLetter + finalPositionNumber );
+            }else{
+                break;
             }
         }
 
