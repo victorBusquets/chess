@@ -12,11 +12,12 @@ export class Canvas{
 
     COLORS = {
         activeCell:{
+            value:'120, 200, 120',
+            opacity:'.75'
+        },
+        activePosibleCell:{
             value:'122, 179, 188',
-            opacity:{
-                click:'.75',
-                hover:'.5'
-            }
+            opacity: '.5'
         },
         killCell:{
             value:'218, 41, 41',
@@ -140,7 +141,7 @@ export class Canvas{
                 var piece = this.checkIsPiecePosition(movement);                
                 var position:any = this.translateValueToPosition(movement);
 
-                this.fillCell( position, 'rgba('+this.COLORS[piece?'killCell':'activeCell'].value+','+this.COLORS.activeCell.opacity.hover+')' );
+                this.fillCell( position, 'rgba('+this.COLORS[piece?'killCell':'activePosibleCell'].value+','+this.COLORS.activePosibleCell.opacity+')' );
 
                 if(piece){
                     this.fillPiece( piece );  
@@ -156,7 +157,7 @@ export class Canvas{
             var piece = this.checkIsPiecePosition(movement);
             var position:any = this.translateValueToPosition(movement);
 
-            this.fillCell( position, 'rgba('+this.COLORS[piece?'killCell':'activeCell'].value+','+this.COLORS.activeCell.opacity.click+')' );      
+            this.fillCell( position, 'rgba('+this.COLORS[piece?'killCell':'activeCell'].value+','+this.COLORS.activeCell.opacity+')' );      
 
             if(piece){
                 this.fillPiece( piece );  
