@@ -85,7 +85,7 @@ export class Canvas{
 
     translateValueToPosition(value:string){
         var x = BOARD_CONSTANT.boardLetters.indexOf(value[0]);
-        var y = 8 - parseInt( value[1] );
+        var y = 8 - parseInt( value.substring(1) );
 
         return {
             x:x,
