@@ -197,14 +197,39 @@ export class Canvas{
         this.fillCell( position, boardCells[index].color );
     }
 
-    executeMovement( piece:any, cellIndex:number, boardCells:any[] ){
-        var lastPosition = piece.position;
-        var newPosition = this.movements[cellIndex];
-
-        this.clearCell( lastPosition, boardCells );
-        piece.position = newPosition;
-        this.fillPiece( piece );
+    executeMovement( piece:any, cellIndex:number, boardCells:any[], changeListenStatus:any ){        
+        var options = {
+            lastPosition: piece.position,
+            newPosition: this.movements[cellIndex],
+            piece: piece
+        };
+        changeListenStatus( false );
         this.clearMovements( boardCells, true );
-        piece.movementCallback();
+        
+        this.executeMovementAnimation(options).then(function(){
+            this.clearCell( options.lastPosition, boardCells );
+            piece.position = options.newPosition;
+            this.fillPiece( piece );
+            piece.movementCallback();
+            changeListenStatus( true );
+        }.bind(this));
+    }
+
+    getMovementSize(lastPosition:string, newPosition:string){
+        var letterSize = Math.abs( BOARD_CONSTANT.boardLetters.indexOf(lastPosition[0]) - BOARD_CONSTANT.boardLetters.indexOf(newPosition[0]) );
+        var numberSize= Math.abs( BOARD_CONSTANT.boardNumbers.indexOf(lastPosition.substr(1)) - BOARD_CONSTANT.boardNumbers.indexOf(newPosition.substr(1)) );
+
+        return ( letterSize > numberSize ? letterSize : numberSize );
+    }
+
+    executeMovementAnimation(options:any){
+        var movementSize = this.getMovementSize( options.lastPosition, options.newPosition );
+        var animationLoops = movementSize * 5;
+
+        return new Promise((resolve:any)=>{
+            setTimeout(function(){
+                resolve();
+            }, 100);
+        });
     }
 };

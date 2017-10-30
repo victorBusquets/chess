@@ -12,6 +12,7 @@ export class Board {
     lastMouseCellPosition:string = '';
     lastMouseCellClickPosition:string = '';
     pieceActive:any = null;
+    listenUserEvents = true;
 
     constructor(){
         this.canvas = new Canvas( this.checkIsPiecePosition.bind(this) );
@@ -51,59 +52,65 @@ export class Board {
     addEventListener( canvas:any ){
         //ESTO ESTA MUY GUARRO!
         canvas.addEventListener('mousemove',  function(evt:any) {
-            var rect = canvas.getBoundingClientRect();
-            var mousePosition = {
-                x: evt.clientX - rect.left,
-                y: evt.clientY - rect.top
-            };
-            var mouseCellPosition = this.getCellByPosition(mousePosition);
-
-            if(mouseCellPosition != this.lastMouseCellPosition && mouseCellPosition != NaN){
-                var piece = this[( this.teamWhiteTurn ? 'white' : 'black' )+ 'Team'].checkPieceInCell( mouseCellPosition );
-                this.lastMouseCellPosition = mouseCellPosition;
-                this.canvas.clearMovements( this.values, false );
-
-                if(piece){
-                    piece.showMovements( false, this.checkIsPiecePosition.bind(this) );
+            if(this.listenUserEvents){
+                var rect = canvas.getBoundingClientRect();
+                var mousePosition = {
+                    x: evt.clientX - rect.left,
+                    y: evt.clientY - rect.top
+                };
+                var mouseCellPosition = this.getCellByPosition(mousePosition);
+                
+                if(mouseCellPosition != this.lastMouseCellPosition && mouseCellPosition != NaN){
+                    var piece = this[( this.teamWhiteTurn ? 'white' : 'black' )+ 'Team'].checkPieceInCell( mouseCellPosition );
+                    this.lastMouseCellPosition = mouseCellPosition;
+                    this.canvas.clearMovements( this.values, false );
+                    
+                    if(piece){
+                        piece.showMovements( false, this.checkIsPiecePosition.bind(this) );
+                    }
                 }
             }
         }.bind(this), false);
         
         canvas.addEventListener('mouseleave', function(evt:any){
-            this.lastMouseCellPosition = '';
-            this.canvas.clearMovements( this.values, false );
+            if(this.listenUserEvents){                
+                this.lastMouseCellPosition = '';
+                this.canvas.clearMovements( this.values, false );
+            }
         }.bind(this));
 
         canvas.addEventListener('click',  function(evt:any) {
-            var rect = canvas.getBoundingClientRect();
-            var mousePosition = {
-                x: evt.clientX - rect.left,
-                y: evt.clientY - rect.top
-            };
-            var mouseCellClickPosition = this.getCellByPosition(mousePosition);
-            var piece = this[( this.teamWhiteTurn ? 'white' : 'black' )+ 'Team'].checkPieceInCell( mouseCellClickPosition );
-            
-            this.lastMouseCellClickPosition = mouseCellClickPosition;
+            if(this.listenUserEvents){                
+                var rect = canvas.getBoundingClientRect();
+                var mousePosition = {
+                    x: evt.clientX - rect.left,
+                    y: evt.clientY - rect.top
+                };
+                var mouseCellClickPosition = this.getCellByPosition(mousePosition);
+                var piece = this[( this.teamWhiteTurn ? 'white' : 'black' )+ 'Team'].checkPieceInCell( mouseCellClickPosition );
+                
+                this.lastMouseCellClickPosition = mouseCellClickPosition;
 
-            if(piece){
-                // Click in piece of my team
-                if( piece==this.pieceActive ){
-                    // Deactive piece
-                    this.pieceActive = null;
-                    this.lastMouseCellClickPosition = '';
-                    this.canvas.clearMovements( this.values, true );   
+                if(piece){
+                    // Click in piece of my team
+                    if( piece==this.pieceActive ){
+                        // Deactive piece
+                        this.pieceActive = null;
+                        this.lastMouseCellClickPosition = '';
+                        this.canvas.clearMovements( this.values, true );   
+                    }else{
+                        // Active piece
+                        this.canvas.clearMovements( this.values, true );
+                        this.pieceActive = piece;
+                        piece.showMovements( true, this.checkIsPiecePosition.bind(this) );
+                    }
                 }else{
-                    // Active piece
-                    this.canvas.clearMovements( this.values, true );
-                    this.pieceActive = piece;
-                    piece.showMovements( true, this.checkIsPiecePosition.bind(this) );
-                }
-            }else{
-                // Click in cell or piece enemy team
-                // console.log("Click in ->", this.canvas.movements.indexOf(mouseCellClickPosition) >=0 ? mouseCellClickPosition : '"Not active cell"'  );
-                // console.log("Piece ->", this.pieceActive ? this.pieceActive : '"Not active piece"');
+                    // Click in cell or piece enemy team
+                    // console.log("Click in ->", this.canvas.movements.indexOf(mouseCellClickPosition) >=0 ? mouseCellClickPosition : '"Not active cell"'  );
+                    // console.log("Piece ->", this.pieceActive ? this.pieceActive : '"Not active piece"');
 
-                this.checkClickInActiveCell(mouseCellClickPosition);
+                    this.checkClickInActiveCell(mouseCellClickPosition);
+                }
             }
         }.bind(this), false);
     }
@@ -114,11 +121,12 @@ export class Board {
         if( this.pieceActive && cellIndex >= 0 ){
             var piece = this.checkIsPiecePosition( this.canvas.movements[cellIndex]);
 
+            this.canvas.executeMovement( this.pieceActive, cellIndex, this.values, this.changeListenStatus.bind(this) );
+
             if( piece ){
                 this[this.teamWhiteTurn ? 'blackTeam' : 'whiteTeam'].killPiece(piece)
             }
 
-            this.canvas.executeMovement( this.pieceActive, cellIndex, this.values );
             this.pieceActive = null;
             this.teamWhiteTurn = !this.teamWhiteTurn;
         }
@@ -133,6 +141,10 @@ export class Board {
         var cellSize = this.canvas.cellSize;
         
         return BOARD_CONSTANT.boardLetters[ Math.ceil( mousePos.x / cellSize ) - 1 ] + BOARD_CONSTANT.boardNumbers[ Math.ceil( mousePos.y / cellSize )-1];
+    }
+
+    changeListenStatus( newStatus:boolean ){
+        this.listenUserEvents = newStatus;
     }
 
 };
